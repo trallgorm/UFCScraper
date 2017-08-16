@@ -2,8 +2,11 @@ from xml.etree.ElementTree import Element, SubElement, tostring
 import xml.etree.ElementTree as ET
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
-fighterLinks = []
+def addTextToNode(node, foundNodeContent):
+    if foundNodeContent is not None:
+        node.text=foundNodeContent.getText().strip()
 
+fighterLinks = []
 testMode=False
 root=Element('fighters')
 for currentPage in range(0,29):
@@ -21,79 +24,85 @@ for currentPage in range(0,29):
         fighterSoup =  BeautifulSoup(fighterPage)
 
         fighterName = SubElement(root, "fighterName")
-        fighterName.text="test"
+        fighterNameContent = fighterSoup.find_all('span', class_='fighter-name')
+        fighterName.text=''
+        for namePlace in fighterNameContent:
+            fighterName.text+=namePlace.find(text=True).strip()+' '
+        print(fighterName.text)
 
         fighterRecord = SubElement(fighterName, "fighterRecord")
-        fighterRecordText=fighterSoup.find('span', class_='fighter-record')
-        if fighterRecordText is not None:
-            print(fighterRecordText.get_text())
-            fighterRecord.text=fighterRecordText.get_text()
+        addTextToNode(fighterRecord,fighterSoup.find('span', class_='fighter-record'))
 
         fighterSummary = SubElement(fighterName, "fighterSummary")
-        fighterSummary.text='test'#fighterSoup.find(id='fighter-skill-summary').get_text()
+        addTextToNode(fighterSummary, fighterSoup.find(id='fighter-skill-summary'))
 
         fighterFrom =  SubElement(fighterName, "fighterFrom")
-        fighterFrom.text="test"
+        addTextToNode(fighterFrom, fighterSoup.find(id='fighter-from'))
 
         fighterOutOf = SubElement(fighterName, "fighterOutOf")
-        fighterOutOf.text="test"
+        addTextToNode(fighterOutOf, fighterSoup.find(id='fighter-lives-in'))
 
         fighterAge = SubElement(fighterName, "fighterAge")
-        fighterAge.text="test"
+        addTextToNode(fighterAge, fighterSoup.find(id='fighter-age'))
 
         fighterHeight = SubElement(fighterName, "fighterHeight")
-        fighterHeight.text="test"
+        addTextToNode(fighterHeight, fighterSoup.find(id='fighter-height'))
+
+        fighterWeight = SubElement(fighterName, "fighterWeight")
+        addTextToNode(fighterWeight, fighterSoup.find(id='fighter-weight'))
 
         fighterReach = SubElement(fighterName, "fighterReach")
-        fighterReach.text="test"
+        addTextToNode(fighterReach, fighterSoup.find(id='fighter-reach'))
+
+        fighterLegReach = SubElement(fighterName, "fighterLegReach")
+        addTextToNode(fighterLegReach, fighterSoup.find(id='fighter-leg-reach'))
 
         fighterTotalStrikes = SubElement(fighterName, "fighterTotalStrikes")
-        fighterTotalStrikes.text="test"
+        #addTextToNode(fighterTotalStrikes, fighterSoup.find(id='fighter-lives-in'))
 
         fighterSuccessfulStrikesPercentage = SubElement(fighterName, "fighterSuccessfulStrikesPercentage")
-        fighterSuccessfulStrikesPercentage.text="test"
+        addTextToNode(fighterSuccessfulStrikesPercentage, fighterSoup.find(id='total-striking-graph-percent-successful'))
 
         fighterTakedowns = SubElement(fighterName, "fighterTakedowns")
-        fighterTakedowns.text="test"
+        #addTextToNode(fighterTakedowns, fighterSoup.find(id='fighter-lives-in'))
 
         fighterSuccessfulTakedownsPercentage = SubElement(fighterName, "fighterSuccessfulTakedownsPercentage")
-        fighterSuccessfulTakedownsPercentage.text="test"
+        addTextToNode(fighterSuccessfulTakedownsPercentage, fighterSoup.find(id='total-striking-graph-percent-successful'))
 
         fighterSuccessfulStrikes = SubElement(fighterName, "fighterSuccessfulStrikes")
-        fighterSuccessfulStrikes.text="test"
+        #addTextToNode(fighterSuccessfulStrikes, fighterSoup.find(id='fighter-lives-in'))
 
         fighterSuccessfulStandingStrikes = SubElement(fighterSuccessfulStrikes, "fighterSuccessfulStandingStrikes")
-        fighterSuccessfulStandingStrikes.text="test"
+        #addTextToNode(fighterSuccessfulStandingStrikes, fighterSoup.find(id='fighter-lives-in'))
 
         fighterSuccessfulGroundStrikes  = SubElement(fighterSuccessfulStrikes, "fighterSuccessfulGroundStrikes")
-        fighterSuccessfulGroundStrikes.text="test"
+        #addTextToNode(fighterSuccessfulGroundStrikes, fighterSoup.find(id='fighter-lives-in'))
 
         fighterSuccessfulClinchStrikes = SubElement(fighterSuccessfulStrikes, "fighterSuccessfulClinchStrikes")
-        fighterSuccessfulClinchStrikes.text="test"
+        #addTextToNode(fighterSuccessfulClinchStrikes, fighterSoup.find(id='fighter-lives-in'))
 
         fighterSubmissions = SubElement(fighterName, "fighterSubmissions")
-        fighterSubmissions.text="test"
+        addTextToNode(fighterSubmissions, fighterSoup.find(id='successful-submissions'))
 
         fighterPasses = SubElement(fighterName, "fighterPasses")
-        fighterPasses.text="test"
+        addTextToNode(fighterPasses, fighterSoup.find(id='successful-passes'))
 
         fighterSweeps = SubElement(fighterName, "fighterSweeps")
-        fighterSweeps.text="test"
+        addTextToNode(fighterSweeps, fighterSoup.find(id='successful-sweeps'))
 
         fighterStrikesAvoidedPercentage = SubElement(fighterName, "fighterStrikesAvoidedPercentage")
-        fighterStrikesAvoidedPercentage.text="test"
+        #addTextToNode(fighterStrikesAvoidedPercentage , fighterSoup.find(id='fighter-lives-in'))
 
         fighterTakedownsAvoidedPercentage = SubElement(fighterName, "fighterTakedownsAvoidedPercentage")
-        fighterTakedownsAvoidedPercentage.text="test"
+        #addTextToNode(fighterTakedownsAvoidedPercentage, fighterSoup.find(id='fighter-lives-in'))
 
         fighterOpponents = SubElement(fighterName, "fighterOpponents")
-        fighterOpponents.text="test"
 
         opponentName = SubElement(fighterOpponents, "opponentName")
-        opponentName.text="test"
+        #addTextToNode(opponentName, fighterSoup.find(id='fighter-lives-in'))
 
         fightResult = SubElement(opponentName, "fightResult")
-        fightResult.text="test"
+        #addTextToNode(fightResult, fighterSoup.find(id='fighter-lives-in'))
 
 tree = ET.ElementTree(root)
 tree.write("fighters.xml")
