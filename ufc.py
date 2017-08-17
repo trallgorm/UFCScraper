@@ -91,18 +91,19 @@ for currentPage in range(0,29):
         addTextToNode(fighterSweeps, fighterSoup.find(id='successful-sweeps'))
 
         fighterStrikesAvoidedPercentage = SubElement(fighterName, "fighterStrikesAvoidedPercentage")
-        #addTextToNode(fighterStrikesAvoidedPercentage , fighterSoup.find(id='fighter-lives-in'))
+        addTextToNode(fighterStrikesAvoidedPercentage , fighterSoup.find(id='striking-defense-pecentage'))
 
         fighterTakedownsAvoidedPercentage = SubElement(fighterName, "fighterTakedownsAvoidedPercentage")
-        #addTextToNode(fighterTakedownsAvoidedPercentage, fighterSoup.find(id='fighter-lives-in'))
+        addTextToNode(fighterTakedownsAvoidedPercentage, fighterSoup.find(id='takedown-defense-percentage'))
 
         fighterOpponents = SubElement(fighterName, "fighterOpponents")
+        opponents = fighterSoup.find_all('td', class_='fighter')
+        for opponent in opponents:
+            opponentName = SubElement(fighterOpponents, "opponentName")
+            addTextToNode(opponentName, opponent.find('a'))
 
-        opponentName = SubElement(fighterOpponents, "opponentName")
-        #addTextToNode(opponentName, fighterSoup.find(id='fighter-lives-in'))
-
-        fightResult = SubElement(opponentName, "fightResult")
-        #addTextToNode(fightResult, fighterSoup.find(id='fighter-lives-in'))
+            fightResult = SubElement(opponentName, "fightResult")
+            #addTextToNode(fightResult, fighterSoup.find(id='fighter-lives-in'))
 
 tree = ET.ElementTree(root)
 tree.write("fighters.xml")
