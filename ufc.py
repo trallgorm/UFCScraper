@@ -97,13 +97,22 @@ for currentPage in range(0,29):
         addTextToNode(fighterTakedownsAvoidedPercentage, fighterSoup.find(id='takedown-defense-percentage'))
 
         fighterOpponents = SubElement(fighterName, "fighterOpponents")
-        opponents = fighterSoup.find_all('td', class_='fighter')
-        for opponent in opponents:
+        fights = fighterSoup.find_all('tr', class_='fight')
+        for fight in fights:
             opponentName = SubElement(fighterOpponents, "opponentName")
-            addTextToNode(opponentName, opponent.find('a'))
+            fighter = fight.find('td', class_='fighter')
+            if fighter is not None:
+                addTextToNode(opponentName, fighter.find('a'))
 
             fightResult = SubElement(opponentName, "fightResult")
-            #addTextToNode(fightResult, fighterSoup.find(id='fighter-lives-in'))
+            result = fight.find('td', class_='result')
+            if result is not None:
+                if(result.find('div', class_='win') is not None or result.find('div', class_='title-fight') is not None or result.find('div', class_='non-ufc-title-fight-win') is not None):
+                    fightResult.text = 'Win'
+                if (result.getText().strip()=="Loss" or result.find('div', class_='title-fight-lose') is not None or result.find('div', class_='non-ufc-title-fight-lose') is not None):
+                    fightResult.text = 'Loss'
+                if (result.getText().strip() == "NO CONTEST"):
+                    fightResult.text = "NO CONTEST"
 
 tree = ET.ElementTree(root)
 tree.write("fighters.xml")
