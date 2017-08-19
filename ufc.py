@@ -57,29 +57,46 @@ for currentPage in range(0,29):
         fighterLegReach = SubElement(fighterName, "fighterLegReach")
         addTextToNode(fighterLegReach, fighterSoup.find(id='fighter-leg-reach'))
 
+        maxNumbers = fighterSoup.find_all('div', class_='max-number')
         fighterTotalStrikes = SubElement(fighterName, "fighterTotalStrikes")
-        #addTextToNode(fighterTotalStrikes, fighterSoup.find(id='fighter-lives-in'))
+        if len(maxNumbers)>0:
+            addTextToNode(fighterTotalStrikes, maxNumbers[0])
+        print(fighterTotalStrikes.text)
 
         fighterSuccessfulStrikesPercentage = SubElement(fighterName, "fighterSuccessfulStrikesPercentage")
         addTextToNode(fighterSuccessfulStrikesPercentage, fighterSoup.find(id='total-striking-graph-percent-successful'))
 
         fighterTakedowns = SubElement(fighterName, "fighterTakedowns")
-        #addTextToNode(fighterTakedowns, fighterSoup.find(id='fighter-lives-in'))
+        if len(maxNumbers) > 1:
+            addTextToNode(fighterTakedowns, maxNumbers[2])
+        print(fighterTakedowns.text)
 
         fighterSuccessfulTakedownsPercentage = SubElement(fighterName, "fighterSuccessfulTakedownsPercentage")
         addTextToNode(fighterSuccessfulTakedownsPercentage, fighterSoup.find(id='total-striking-graph-percent-successful'))
 
         fighterSuccessfulStrikes = SubElement(fighterName, "fighterSuccessfulStrikes")
-        #addTextToNode(fighterSuccessfulStrikes, fighterSoup.find(id='fighter-lives-in'))
+        addTextToNode(fighterSuccessfulStrikes, fighterSoup.find(id='types-of-successful-strikes-graph-maximum'))
+
+        strikesgraph = fighterSoup.find(id='types-of-successful-strikes-graph')
 
         fighterSuccessfulStandingStrikes = SubElement(fighterSuccessfulStrikes, "fighterSuccessfulStandingStrikes")
-        #addTextToNode(fighterSuccessfulStandingStrikes, fighterSoup.find(id='fighter-lives-in'))
+        if strikesgraph is not None:
+            standing = strikesgraph.find('div', class_='red-text-bar')
+            if standing is not None:
+                addTextToNode(fighterSuccessfulStandingStrikes,  standing.find('div', class_='bar-text'))
 
         fighterSuccessfulGroundStrikes  = SubElement(fighterSuccessfulStrikes, "fighterSuccessfulGroundStrikes")
-        #addTextToNode(fighterSuccessfulGroundStrikes, fighterSoup.find(id='fighter-lives-in'))
+        if strikesgraph is not None:
+            ground = strikesgraph.find('div', class_='dark-red-text-bar')
+            if ground is not None:
+                addTextToNode( fighterSuccessfulGroundStrikes,  ground.find('div', class_='bar-text'))
 
         fighterSuccessfulClinchStrikes = SubElement(fighterSuccessfulStrikes, "fighterSuccessfulClinchStrikes")
-        #addTextToNode(fighterSuccessfulClinchStrikes, fighterSoup.find(id='fighter-lives-in'))
+        if strikesgraph is not None:
+            clinch = strikesgraph.find('div', class_='grey-text-bar')
+            if clinch is not None:
+                addTextToNode( fighterSuccessfulClinchStrikes,  clinch.find('div', class_='bar-text'))
+
 
         fighterSubmissions = SubElement(fighterName, "fighterSubmissions")
         addTextToNode(fighterSubmissions, fighterSoup.find(id='successful-submissions'))
