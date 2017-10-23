@@ -30,7 +30,7 @@ for currentPage in range(0,29):
         fighterName.text=''
         for namePlace in fighterNameContent:
             fighterName.text+=namePlace.find(text=True).strip()+' '
-        print(fighterName.text)
+        print("Adding fighter: " + fighterName.text)
 
         fighterRecord = SubElement(fighterName, "fighterRecord")
         addTextToNode(fighterRecord,fighterSoup.find('span', class_='fighter-record'))
@@ -63,7 +63,6 @@ for currentPage in range(0,29):
         fighterTotalStrikes = SubElement(fighterName, "fighterTotalStrikes")
         if len(maxNumbers)>0:
             addTextToNode(fighterTotalStrikes, maxNumbers[0])
-        print(fighterTotalStrikes.text)
 
         fighterSuccessfulStrikesPercentage = SubElement(fighterName, "fighterSuccessfulStrikesPercentage")
         addTextToNode(fighterSuccessfulStrikesPercentage, fighterSoup.find(id='total-striking-graph-percent-successful'))
@@ -71,7 +70,6 @@ for currentPage in range(0,29):
         fighterTakedowns = SubElement(fighterName, "fighterTakedowns")
         if len(maxNumbers) > 1:
             addTextToNode(fighterTakedowns, maxNumbers[2])
-        print(fighterTakedowns.text)
 
         fighterSuccessfulTakedownsPercentage = SubElement(fighterName, "fighterSuccessfulTakedownsPercentage")
         addTextToNode(fighterSuccessfulTakedownsPercentage, fighterSoup.find(id='total-striking-graph-percent-successful'))
