@@ -1,4 +1,5 @@
 
+import datetime
 
 from xml.etree.ElementTree import Element, SubElement, tostring
 import xml.etree.ElementTree as ET
@@ -11,19 +12,19 @@ def addTextToNode(node, foundNodeContent):
 fighterLinks = []
 testMode=False
 root=Element('fighters')
-for currentPage in range(0,29):
+for currentPage in range(0,33):
     print("Starting work on page " + str(currentPage))
     page = ''
     if (not testMode):
         page = urlopen("http://www.ufc.ca/fighter/Weight_Class/filterFighters?offset="+str(currentPage*20)+"&max=20&sort=lastName&order=asc")
-    soup = BeautifulSoup(page)
+    soup = BeautifulSoup(page,'html5lib')
     fighterLinksOnPage=soup.find_all('a', class_='fighter-name')
     for fighterLink in fighterLinksOnPage:
         fighterLinks.append(fighterLink['href'])
         fighterPage=''
         if (not testMode):
             fighterPage = urlopen("http://www.ufc.ca"+fighterLink['href'])
-        fighterSoup =  BeautifulSoup(fighterPage)
+        fighterSoup =  BeautifulSoup(fighterPage, 'html5lib')
 
         fighterName = SubElement(root, "fighterName")
         fighterNameContent = fighterSoup.find_all('span', class_='fighter-name')
@@ -35,9 +36,9 @@ for currentPage in range(0,29):
         fighterRecord = SubElement(fighterName, "fighterRecord")
         addTextToNode(fighterRecord,fighterSoup.find('span', class_='fighter-record'))
 
-        wins=0
-        losses=0
-        if len(fighterRecord.text) > 2:
+        wins=-1
+        losses=-1
+        if fighterRecord.text is not None:
             wins= (int(fighterRecord.text.replace(",", "-").replace("(", "-").split("-")[0]))
             losses = (int(fighterRecord.text.replace(",", "-").replace("(", "-").split("-")[1]))
 
@@ -52,6 +53,9 @@ for currentPage in range(0,29):
 
         fighterAge = SubElement(fighterName, "fighterAge")
         addTextToNode(fighterAge, fighterSoup.find(id='fighter-age'))
+        age = -1
+        if fighterAge.text is not None:
+            age=int(fighterAge.text)
 
         fighterHeight = SubElement(fighterName, "fighterHeight")
         addTextToNode(fighterHeight, fighterSoup.find(id='fighter-height'))
@@ -142,6 +146,7 @@ for currentPage in range(0,29):
                 if (result.getText().strip() == "NO CONTEST"):
                     fightResult.text = "NO CONTEST"
 
+            #Subtracts the amount of wins based on the order of the fight so the record at the time of the fight can be obtained
             winsAtTheTimeOfFight = SubElement(opponentName, "fighterWinsPriorToFight")
             winsAtTheTimeOfFight.text = str(wins)
 
@@ -151,6 +156,9 @@ for currentPage in range(0,29):
             dateOfFight = SubElement(opponentName, "dateOfFight")
             event = fight.find('td', class_='event').find('div').next_sibling.strip()
             dateOfFight.text = event
+
+            ageAtTheTime = SubElement(opponentName, "fighterAgeAtTimeOfFight")
+            ageAtTheTime.text=str(age-(int(datetime.datetime.now().year)-int(dateOfFight.text.split(" ")[2])))
 
 tree = ET.ElementTree(root)
 tree.write("fighters.xml")
