@@ -35,6 +35,12 @@ for currentPage in range(0,29):
         fighterRecord = SubElement(fighterName, "fighterRecord")
         addTextToNode(fighterRecord,fighterSoup.find('span', class_='fighter-record'))
 
+        wins=0
+        losses=0
+        if len(fighterRecord.text) > 2:
+            wins= (int(fighterRecord.text.replace(",", "-").replace("(", "-").split("-")[0]))
+            losses = (int(fighterRecord.text.replace(",", "-").replace("(", "-").split("-")[1]))
+
         fighterSummary = SubElement(fighterName, "fighterSummary")
         addTextToNode(fighterSummary, fighterSoup.find(id='fighter-skill-summary'))
 
@@ -115,6 +121,9 @@ for currentPage in range(0,29):
 
         fighterOpponents = SubElement(fighterName, "fighterOpponents")
         fights = fighterSoup.find_all('tr', class_='fight')
+
+
+
         for fight in fights:
             opponentName = SubElement(fighterOpponents, "opponentName")
             fighter = fight.find('td', class_='fighter')
@@ -126,10 +135,22 @@ for currentPage in range(0,29):
             if result is not None:
                 if(result.find('div', class_='win') is not None or result.find('div', class_='title-fight') is not None or result.find('div', class_='non-ufc-title-fight-win') is not None):
                     fightResult.text = 'Win'
+                    wins-=1
                 if (result.getText().strip()=="Loss" or result.find('div', class_='title-fight-lose') is not None or result.find('div', class_='non-ufc-title-fight-lose') is not None):
                     fightResult.text = 'Loss'
+                    losses-=1
                 if (result.getText().strip() == "NO CONTEST"):
                     fightResult.text = "NO CONTEST"
+
+            winsAtTheTimeOfFight = SubElement(opponentName, "fighterWinsPriorToFight")
+            winsAtTheTimeOfFight.text = str(wins)
+
+            lossesAtTheTimeOfFight = SubElement(opponentName, "fighterLossesPriotToFight")
+            lossesAtTheTimeOfFight.text = str(losses)
+
+            dateOfFight = SubElement(opponentName, "dateOfFight")
+            event = fight.find('td', class_='event').find('div').next_sibling.strip()
+            dateOfFight.text = event
 
 tree = ET.ElementTree(root)
 tree.write("fighters.xml")
